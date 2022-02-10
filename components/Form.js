@@ -13,8 +13,6 @@ const Form = () => {
       try {
         await insertion(vorname, lastname);
         await retrieve();
-        // let table = result.rows._array;
-        // console.log();
       } catch (e) {
         console.log(e.message);
       }

@@ -1,13 +1,20 @@
-import { StyleSheet, Text, View } from "react-native";
+import { database, insertion, retrieve } from "./db";
+import { StyleSheet, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect } from "react";
 import Form from "./components/Form";
-import { database } from "./db";
+import React from "react";
 
 export default function App() {
-  database()
-    .then(() => console.log("Form successfully created."))
-    .catch((err) => console.log("Table creation failed!" + err.message));
+  const bootingUp = async () => {
+    try {
+      await database();
+      await insertion("Naghi", "Mamuli");
+      await retrieve();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  bootingUp();
 
   return (
     <View style={styles.container}>
