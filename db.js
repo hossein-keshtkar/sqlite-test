@@ -7,8 +7,11 @@ export function database() {
       tx.executeSql(
         "CREATE TABLE IF NOT EXISTS form (id INTEGER PRIMARY KEY AUTOINCREMENT, FirstName TEXT NOT NULL, LastName TEXT NOT NULL)",
         [],
-        () => resolve(),
-        (err) => reject(err)
+        () => {
+          console.log("Table Created.");
+          resolve();
+        },
+        (err) => reject(new Error("Couldn't Create the Table!" + err))
       );
     });
   });
@@ -21,12 +24,11 @@ export const insertion = (firstName, lastName) => {
         "INSERT INTO form ( FirstName, LastName) VALUES (?,?)",
         [firstName, lastName],
         () => {
-          console.log(`${firstName} and ${lastName} added.`);
+          console.log(`${firstName} ${lastName} Added to the Table.`);
           resolve();
         },
         (err) => {
-          console.log("Row initialization failed!" + err);
-          reject();
+          reject(new Error("Row initialization failed!" + err));
         }
       );
     });
@@ -46,8 +48,7 @@ export const retrieve = () => {
           resolve();
         },
         (err) => {
-          console.log("Retrieve failed!" + err);
-          reject(err);
+          reject(new Error("Retrieve failed!" + err));
         }
       );
     });
