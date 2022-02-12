@@ -1,18 +1,57 @@
 import { StyleSheet, Text, View, TextInput, Button } from "react-native";
-import { insertion, retrieve } from "../db";
+import { tableCreation, insertTable, retrieveTable } from "../db";
 import React, { useState } from "react";
 import Card from "./Card";
 
 const Form = () => {
   const [lastname, setLastname] = useState("");
   const [vorname, setVorname] = useState("");
+  const promises = (name, time) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        console.log(`${name} Is Resolved`);
+        resolve();
+      }, time);
+    });
+  };
+
   const pressHandler = async () => {
+    // Promise.all([promises("1st", 2000), promises("2nd", 2000)]);
+    // console.log('Not Interesting!');
+
+    //////////////////////////////////
+
+    // try {
+    //   console.log("start");
+    //   await promises("1st", 2000);
+    //   await promises("2nd", 2000);
+    //   console.log("stop");
+    // } catch (e) {
+    //   console.log(e);
+    // }
+
+    /////////////////////////////////////
+
+    // console.log("Start");
+    // promises("1st", 2000)
+    //   .then(() =>
+    //     promises("2nd", 2000)
+    //       .then(() => console.log("Done"))
+    //       .catch((e) => console.log(e))
+    //   )
+    //   .catch((e) => console.log(e));
+
+    //////////////////////////////////////
+
     if (!lastname || !vorname) {
       alert("Please fill in the form!");
     } else {
       try {
-        await insertion(vorname, lastname);
-        await retrieve();
+        console.log("Start");
+        await tableCreation("MyTable");
+        await insertTable("MyTable", vorname, lastname);
+        await retrieveTable("MyTable");
+        console.log("Done");
       } catch (e) {
         console.log(e.message);
       }

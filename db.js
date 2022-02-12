@@ -1,45 +1,47 @@
 import * as SQLite from "expo-sqlite";
-const db = SQLite.openDatabase("test.db", "1.0.0", "SQLite Test");
+const db = SQLite.openDatabase("table.db", "1.0.0", "SQLite Test");
 
-export function database() {
+export function tableCreation(tableName) {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
-        "CREATE TABLE IF NOT EXISTS form (id INTEGER PRIMARY KEY AUTOINCREMENT, FirstName TEXT NOT NULL, LastName TEXT NOT NULL)",
+        `CREATE TABLE IF NOT EXISTS ${tableName} ( FirstName TEXT NOT NULL, LastName TEXT NOT NULL)`,
         [],
         () => {
-          console.log("Table Created.");
+          console.log(`Table ${tableName} Created or Already Existed.`);
           resolve();
         },
-        (err) => reject(new Error("Couldn't Create the Table!" + err))
+        (err) => {
+          reject(new Error("Couldn't Create the Table!" + err));
+        }
       );
     });
   });
 }
 
-export const insertion = (firstName, lastName) => {
+export const insertTable = (tableName, firstName, lastName) => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
-        "INSERT INTO form ( FirstName, LastName) VALUES (?,?)",
+        `INSERT INTO ${tableName} ( FirstName, LastName) VALUES (?,?)`,
         [firstName, lastName],
         () => {
-          console.log(`${firstName} ${lastName} Added to the Table.`);
+          console.log(`${firstName} ${lastName} Added.`);
           resolve();
         },
         (err) => {
-          reject(new Error("Row initialization failed!" + err));
+          reject(new Error("Initialization failed!" + err));
         }
       );
     });
   });
 };
 
-export const retrieve = () => {
+export const retrieveTable = (tableName) => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
-        "SELECT * FROM form ORDER BY id DESC",
+        `SELECT * FROM ${tableName}`,
         [],
         (_, result) => {
           console.log("Database retrieved.");
@@ -49,6 +51,25 @@ export const retrieve = () => {
         },
         (err) => {
           reject(new Error("Retrieve failed!" + err));
+        }
+      );
+    });
+  });
+};
+
+export const drop = (name) => {
+  return new Promise((resolve, reject) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        `DROP TABLE ${name}`,
+        [],
+        () => {
+          console.log(`Table ${name} dropped successfully.`);
+          resolve();
+        },
+        (err) => {
+          console.log("Drop Failed!" + err);
+          reject();
         }
       );
     });

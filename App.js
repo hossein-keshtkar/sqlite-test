@@ -1,15 +1,13 @@
-import { database, insertion, retrieve } from "./db";
 import { StyleSheet, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import Form from "./components/Form";
+import { drop } from "./db";
 import React from "react";
 
 export default function App() {
   const bootingUp = async () => {
     try {
-      await database();
-      await insertion("Naghi", "Mamuli");
-      await retrieve();
+      await drop("MyTable");
     } catch (e) {
       console.log(e);
     }
